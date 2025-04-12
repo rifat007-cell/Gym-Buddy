@@ -1,0 +1,265 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
+    margin: 0;
+  }
+
+  /* https://www.scottohara.me/blog/2019/01/12/lists-and-safari.html */
+  [role="list"] {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-block-size: 100vh;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  button,
+  input,
+  label {
+    line-height: 1.1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  img,
+  picture {
+    max-inline-size: 100%;
+    display: block;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer base {
+  /* this first root layer is called primitives layer or design token
+     if i want to tweak the design i can do it here and it will be reflected
+      everywhere in the project */
+
+  :root {
+    /* Base Colors */
+    --clr-white: hsl(0, 0%, 100%);
+    --clr-black: hsl(0, 0%, 8%);
+    --clr-gray-100: hsl(0, 0%, 90%);
+    --clr-gray-800: hsl(0, 0%, 20%);
+
+    /* Primary (Energetic Orange) */
+    --clr-primary-400: hsl(20, 90%, 60%);
+    --clr-primary-500: hsl(20, 95%, 50%);
+    --clr-primary-600: hsl(20, 85%, 40%);
+
+    /* Accent (Power Red) */
+    --clr-accent-400: hsl(0, 85%, 55%);
+    --clr-accent-500: hsl(0, 80%, 45%);
+    --clr-accent-600: hsl(0, 75%, 35%);
+
+    /* Success (Healthy Green) */
+    --clr-success-400: hsl(140, 60%, 45%);
+    --clr-success-500: hsl(140, 55%, 35%);
+    --clr-success-600: hsl(140, 50%, 25%);
+
+    /* Background Layers */
+    --clr-bg-light: hsl(0, 0%, 96%);
+    --clr-bg-main: hsl(0, 0%, 12%);
+    --clr-bg-dark: hsl(0, 0%, 6%);
+
+    /* Font Families */
+    --ff-heading: "MonaSpaceKrypton", sans-serif;
+    --ff-body: "MonaSpaceArgon", sans-serif;
+
+    /* Font Sizes */
+    --fs-300: 0.875rem;
+    --fs-400: 1rem;
+    --fs-500: 1.125rem;
+    --fs-600: 1.25rem;
+    --fs-700: 1.5rem;
+    --fs-800: 2rem;
+    --fs-900: 3rem;
+    --fs-1000: 4rem;
+
+    @media (width > 760px) {
+      --fs-300: 0.875rem;
+      --fs-400: 1rem;
+      --fs-500: 1.25rem;
+      --fs-600: 1.5rem;
+      --fs-700: 2rem;
+      --fs-800: 3rem;
+      --fs-900: 4rem;
+      --fs-1000: 6rem;
+    }
+  }
+
+  /* this is the final variable that we will use rest of the project 
+     and this is called the semantic layer */
+
+  :root {
+    --text-main: var(--clr-gray-100);
+    --text-contrast: var(--clr-white);
+    --text-accent: var(--clr-primary-500);
+
+    --background-main: var(--clr-bg-main);
+    --background-dark: var(--clr-bg-dark);
+    --background-light: var(--clr-bg-light);
+
+    --button-primary-bg: var(--clr-primary-500);
+    --button-primary-hover: var(--clr-primary-600);
+    --button-danger-bg: var(--clr-accent-500);
+    --button-danger-hover: var(--clr-accent-600);
+  }
+
+  @font-face {
+    font-family: "MonaSpaceArgon";
+    src: url("./fonts/MonaspaceArgon.woff2");
+  }
+
+  @font-face {
+    font-family: "MonaSpaceKrypton";
+    src: url("./fonts/MonaspaceKrypton.woff2");
+  }
+
+  body {
+    font-size: var(--font-size-regular);
+    color: var(--text-main);
+    background-color: var(--background-main);
+    font-family: var(--ff-body);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--ff-heading);
+    font-weight: 700;
+    color: var(--text-high-contrast);
+  }
+
+  a {
+    color: var(--text-contrast);
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--text-brand-light);
+  }
+}
+
+@layer layout {
+  .flow > * + * {
+    margin-block-start: 1.5rem;
+  }
+
+  .wrapper {
+    --wrapper-max-width: 1130px;
+    --wrapper-padding: 1rem;
+
+    &[data-width="narrow"] {
+      --wrapper-max-width: 720px;
+    }
+    &[data-width="wide"] {
+      --wrapper-max-width: 1330px;
+    }
+
+    max-inline-size: var(--wrapper-max-width);
+    margin-inline: auto;
+    padding-inline: var(--wrapper-padding);
+  }
+}
+
+@layer component {
+  .header {
+    --bg-clr: hsla(0, 0%, 0%, 0.2);
+    background-color: var(--bg-clr);
+    filter: blur(0.3px);
+
+    & .header__side {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+    }
+  }
+
+  .hero {
+    background: rgba(0, 0, 0, 0.7) url("./bg.png") no-repeat center center/cover;
+    height: 100vh;
+    background-blend-mode: darken;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+  }
+
+  nav {
+    & ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+  }
+
+  .button {
+    display: inline-block;
+    font-family: var(--ff-body);
+    font-size: var(--font-size-md);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: var(--button-primary-bg);
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+}

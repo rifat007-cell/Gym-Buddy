@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="wrapper header__side" data-width="wide">
+        <svg
+          width="240"
+          height="60"
+          viewBox="0 0 240 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <style>
+            .text {
+              font-family: "MonaSpaceKrypton", sans-serif;
+              font-size: 2rem;
+              font-weight: bold;
+              fill: #ff7a00;
+            }
+            .bar {
+              fill: hsla(22, 73%, 51%, 0.569);
+            }
+            .plate {
+              fill: #ff7a00;
+            }
+          </style>
+
+          <!-- Barbell -->
+          <rect x="5" y="28" width="50" height="4" class="bar" />
+          <rect x="5" y="24" width="4" height="12" class="plate" />
+          <rect x="51" y="24" width="4" height="12" class="plate" />
+
+          <!-- GymTrackr Text -->
+          <text x="65" y="38" class="text">GymTrackr</text>
+        </svg>
+        <nav>
+          <ul role="list">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrapper" data-width="narrow">
+          <div class="flow">
+            <h1 class="hero__title">Welcome to GymTrackr</h1>
+            <p class="hero__description">
+              Your ultimate fitness companion. Track your workouts, monitor your
+              progress, and achieve your fitness goals with ease.
+            </p>
+            <a href="#services" class="button">Get Started</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
