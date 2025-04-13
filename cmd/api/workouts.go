@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -23,6 +24,12 @@ import (
 
 
 
+func (app *application) catchAllClientRequestHandler(w http.ResponseWriter, r *http.Request) {
+	// Serve the client application
+	http.ServeFile(w,r,"./public/index.html")
+
+
+}
 
 
 
@@ -33,12 +40,15 @@ func (app *application) getExercisesByWorkoutHandler(w http.ResponseWriter, r *h
 		Label string `json:"label"`
 	}
 
+
 	err:= app.readJSON(w,r,&input)
 
 	if err!=nil{
 		app.badRequestResponse(w,r,err)
 		return
 	}
+
+	fmt.Println("Decoded JSON:", input)
 
 	// get from db
 

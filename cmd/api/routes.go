@@ -8,6 +8,9 @@ func (app *application) routes() http.Handler {
 
 
   mux.Handle("GET /",http.FileServer(http.Dir("./public")))
+
+		mux.HandleFunc("GET /workout",app.catchAllClientRequestHandler)
+
 	
 
 	// sentry middleware

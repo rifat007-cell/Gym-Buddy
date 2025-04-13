@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/styles.css" />
     <title>Document</title>
+    <script src="/app.js" type="module" defer></script>
+    <base href="/" />
   </head>
   <body>
     <header class="header">
@@ -21,13 +23,13 @@
               font-family: "MonaSpaceKrypton", sans-serif;
               font-size: 2rem;
               font-weight: bold;
-              fill: #ff7a00;
+              fill: #dd5612;
             }
             .bar {
               fill: hsla(22, 73%, 51%, 0.569);
             }
             .plate {
-              fill: #ff7a00;
+              fill: #dd5612;
             }
           </style>
 
@@ -41,8 +43,8 @@
         </svg>
         <nav>
           <ul role="list">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/workout">Workout</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -50,7 +52,13 @@
       </div>
     </header>
 
-    <main>
+    <main></main>
+
+    <dialog id="alert-modal">
+      <button onclick="app.closeModal()">X</button>
+    </dialog>
+
+    <template id="home-page-template">
       <section class="hero">
         <div class="wrapper" data-width="narrow">
           <div class="flow">
@@ -59,10 +67,36 @@
               Your ultimate fitness companion. Track your workouts, monitor your
               progress, and achieve your fitness goals with ease.
             </p>
-            <a href="#services" class="button">Get Started</a>
+            <a href="/workout" class="button">Get Started</a>
           </div>
         </div>
       </section>
-    </main>
+    </template>
+
+    <template id="workout-page-template">
+      <section class="workout">
+        <form class="form" onsubmit="app.sendWorkoutData(event)">
+          <label for="goal">
+            <h2>Workout Goal</h2>
+            <select id="goal" name="goal">
+              <option value="Build Muscle">Build Muscle</option>
+              <option value="Improve Endurance">Improve Endurance</option>
+              <option value="Lose Fat">Lose Fat</option>
+            </select>
+          </label>
+
+          <label for="level">
+            <h2>Level</h2>
+            <select id="level" name="level">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </label>
+
+          <button type="submit" class="button">Generate Workout Plan</button>
+        </form>
+      </section>
+    </template>
   </body>
 </html>
