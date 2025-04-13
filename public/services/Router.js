@@ -5,6 +5,7 @@ export const Router = {
     document.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", (event) => {
         event.preventDefault();
+
         const href = a.getAttribute("href");
         Router.go(href);
       });
@@ -17,6 +18,15 @@ export const Router = {
     Router.go(location.pathname + location.search);
   },
   go: (route, addToHistory = true) => {
+    document.querySelectorAll("a").forEach((link) => {
+      const linkHref = link.getAttribute("href");
+      if (linkHref === route) {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+
     if (addToHistory) {
       history.pushState(null, "", route);
     }

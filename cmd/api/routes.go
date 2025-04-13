@@ -23,5 +23,7 @@ func (app *application) routes() http.Handler {
 
 	mux.Handle("POST /v1/meals", app.recoverPanic(app.withSentry(http.HandlerFunc(app.getMealByWorkoutHandler))))
 
+	mux.Handle("POST /v1/account/register", app.recoverPanic(app.withSentry(http.HandlerFunc(app.registerUserHandler))))
+
 	return mux
 }

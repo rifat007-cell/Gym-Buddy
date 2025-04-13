@@ -282,6 +282,10 @@ body > header {
       flex-wrap: wrap;
       gap: 0.5rem 1rem;
     }
+    & .active {
+      color: var(--clr-accent-400);
+      font-weight: 600;
+    }
   }
 
   .button {

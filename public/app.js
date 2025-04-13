@@ -87,7 +87,7 @@ globalThis.app = {
       mealElements.classList.add("meal-modal");
       mealElements.innerHTML = `
     
-        <p>Name : ${meal.name} <span style="color:hsl(20, 95%, 23%)">(${meal.calories})</span></p>
+        <p>Name : ${meal.name} <span style="color:hsl(20, 95%, 23%)">(${meal.calories}cal)</span></p>
         <p>Description: ${meal.description}</p>
         <br/>
       `;
