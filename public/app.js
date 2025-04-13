@@ -23,18 +23,11 @@ globalThis.app = {
 
     const modal = document.getElementById("alert-modal");
 
+    Array.from(modal.querySelectorAll(".meal-modal, .workout-modal")).forEach(
+      (el) => el.remove()
+    );
+
     document.getElementById("alert-modal").showModal();
-    // document.querySelector("#alert-modal p").textContent = res.workouts;
-    console.log(res.workouts);
-
-    // Clear previous workouts
-    const workoutElements = document.querySelectorAll(".workout-modal");
-
-    console.log(workoutElements);
-
-    workoutElements.forEach((element) => {
-      element.remove();
-    });
 
     if (!res.workouts) {
       const workoutElement = document.createElement("div");
@@ -54,6 +47,51 @@ globalThis.app = {
         <p>${workout.exercises[0].name}(${workout.exercises[0].sets})x(${workout.exercises[0].reps})</p>
       `;
       modal.appendChild(workoutElement);
+    });
+
+    console.log(res);
+  },
+
+  sendMealData: async (event) => {
+    event.preventDefault();
+    const goal = document.querySelector("#goal").value;
+    const dietary = document.querySelector("#dietary").value;
+
+    const data = {
+      goal: goal,
+      dietary_preference: dietary,
+    };
+
+    const res = await API.getMeals(data);
+
+    const modal = document.getElementById("alert-modal");
+
+    document.getElementById("alert-modal").showModal();
+
+    Array.from(modal.querySelectorAll(".meal-modal, .workout-modal")).forEach(
+      (el) => el.remove()
+    );
+
+    if (!res.meals) {
+      const mealElements = document.createElement("div");
+      mealElements.classList.add("meal-modal");
+      mealElements.innerHTML = `
+        <p>No workouts found</p>
+      `;
+      modal.appendChild(mealElements);
+      return;
+    }
+
+    res.meals.forEach((meal) => {
+      const mealElements = document.createElement("div");
+      mealElements.classList.add("meal-modal");
+      mealElements.innerHTML = `
+    
+        <p>Name : ${meal.name} <span style="color:hsl(20, 95%, 23%)">(${meal.calories})</span></p>
+        <p>Description: ${meal.description}</p>
+        <br/>
+      `;
+      modal.appendChild(mealElements);
     });
 
     console.log(res);

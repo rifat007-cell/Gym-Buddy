@@ -1,4 +1,5 @@
 import { HomePage } from "../components/HomePage.js";
+import { MealPage } from "../components/MealPage.js";
 import { WorkoutPage } from "../components/WorkoutPage.js";
 
 export const routes = [
@@ -9,5 +10,10 @@ export const routes = [
   {
     path: "/workout",
     component: WorkoutPage,
+  },
+
+  {
+    path: "/meal",
+    component: MealPage,
   },
 ];

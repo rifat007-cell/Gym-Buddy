@@ -4,6 +4,9 @@ export const API = {
   getWorkouts: (data) => {
     return API.fetchData("/workouts", data);
   },
+  getMeals: (data) => {
+    return API.fetchData("/meals", data);
+  },
 
   fetchData: async (url, data = {}) => {
     try {

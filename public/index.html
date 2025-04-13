@@ -45,7 +45,7 @@
           <ul role="list">
             <li><a href="/">Home</a></li>
             <li><a href="/workout">Workout</a></li>
-            <li><a href="#services">Services</a></li>
+            <li><a href="/meal">Meal</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
@@ -95,6 +95,31 @@
           </label>
 
           <button type="submit" class="button">Generate Workout Plan</button>
+        </form>
+      </section>
+    </template>
+
+    <template id="meal-page-template">
+      <section class="workout">
+        <form class="form" onsubmit="app.sendMealData(event)">
+          <label for="goal">
+            <h2>Meal</h2>
+            <select id="goal" name="goal">
+              <option value="Build Muscle">Build Muscle</option>
+              <option value="Improve Endurance">Improve Endurance</option>
+              <option value="Lose Fat">Lose Fat</option>
+            </select>
+          </label>
+
+          <label for="dietary">
+            <h2>Dietary</h2>
+            <select id="dietary" name="dietary">
+              <option value="Veg">Veg</option>
+              <option value="Non-Veg">Non-Veg</option>
+            </select>
+          </label>
+
+          <button type="submit" class="button">Generate Meal Plan</button>
         </form>
       </section>
     </template>
