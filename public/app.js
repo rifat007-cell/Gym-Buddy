@@ -1,11 +1,30 @@
 import { API } from "./services/API.js";
 import Router from "./services/Router.js";
+import Store from "./services/Store.js";
 
 globalThis.addEventListener("DOMContentLoaded", () => {
   app.router.init();
 });
 
 globalThis.app = {
+  showError: (message = "There was an error.", goToHome = false) => {
+    document.getElementById("alert-modal").showModal();
+    const p = document.createElement("p");
+    console.log(message);
+    p.innerText = message;
+    p.style.color = "hsl(20, 95%, 23%)";
+    p.style.fontSize = "1.5rem";
+    document
+      .getElementById("alert-modal")
+      .appendChild(p)
+      .classList.add("error-message");
+    if (goToHome) {
+      setTimeout(() => {
+        app.router.go("/");
+        app.closeModal();
+      }, 3000);
+    }
+  },
   closeModal: () => {
     document.querySelector("#alert-modal").close();
   },
@@ -96,6 +115,80 @@ globalThis.app = {
 
     console.log(res);
   },
+
+  register: async (event) => {
+    event.preventDefault();
+    let errors = [];
+
+    const name = document.getElementById("register-name").value;
+    const email = document.getElementById("register-email").value;
+    const password = document.getElementById("register-password").value;
+    const passwordConfirm = document.getElementById(
+      "register-password-confirm"
+    ).value;
+
+    if (name.length < 4) errors.push("Enter your complete name");
+    if (email.length < 8) errors.push("Enter your complete email");
+    if (password.length < 6) errors.push("Enter a password with 6 characters");
+    if (password != passwordConfirm) errors.push("Passwords don't match");
+
+    console.log(errors);
+
+    if (errors.length == 0) {
+      const data = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      const response = await API.register(data);
+      if (response.user) {
+        app.store.jwt = response.user.jwt;
+
+        app.router.go("/account/");
+      } else {
+        app.showError(response.message, false);
+      }
+    } else {
+      app.showError(errors.join(". "), false);
+    }
+  },
+
+  login: async (event) => {
+    event.preventDefault();
+    let errors = [];
+
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    if (email.length < 8) errors.push("Enter your complete email");
+    if (password.length < 6) errors.push("Enter a password with 6 characters");
+
+    console.log(errors);
+
+    if (errors.length == 0) {
+      const data = {
+        email: email,
+        password: password,
+      };
+      const response = await API.login(data);
+      if (response.user) {
+        app.store.jwt = response.user.jwt;
+
+        app.router.go("/account/");
+      } else {
+        app.showError(response.message, false);
+      }
+    } else {
+      app.showError(errors.join(". "), false);
+    }
+  },
+
+  logout: () => {
+    app.store.jwt = null;
+    app.router.go("/");
+  },
+
+  store: Store,
   router: Router,
   api: API,
 };

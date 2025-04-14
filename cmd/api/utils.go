@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/smtp"
+	"os"
 	"strings"
+	"text/template"
 )
 
 
@@ -103,3 +107,45 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request,dst any)
 return nil
 }
 
+
+// i am using the built in go smtp package to send emails
+
+func (app *application) sendEmail(to []string, subject string, data any) error {
+	auth := smtp.PlainAuth("", os.Getenv("FROM_EMAIL"), os.Getenv("FROM_EMAIL_PASSWORD"), os.Getenv("FROM_EMAIL_SMTP"))
+
+	// 1. Parse the template
+	tmpl, err := template.ParseFiles("./internal/mailer/templates/user_welcome.tmpl.html")
+	if err != nil {
+		return err
+	}
+
+	// 2. Render the template to a buffer
+	buf:= new(bytes.Buffer)
+	err = tmpl.Execute(buf, data)
+	if err != nil {
+		return err
+	}
+
+	// 3. Construct email headers
+	headers := make(map[string]string)
+	headers["From"] = os.Getenv("FROM_EMAIL")
+	headers["To"] = strings.Join(to, ",")
+	headers["Subject"] = subject
+	headers["MIME-Version"] = "1.0"
+	headers["Content-Type"] = "text/html; charset=\"UTF-8\""
+
+	var message strings.Builder
+	for k, v := range headers {
+		message.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
+	}
+	message.WriteString("\r\n" + buf.String())
+
+	// 4. Send the email
+	return smtp.SendMail(
+		os.Getenv("SMTP_ADDR"), // e.g., "sandbox.smtp.mailtrap.io:587"
+		auth,
+		os.Getenv("FROM_EMAIL"),
+		to,
+		[]byte(message.String()),
+	)
+}

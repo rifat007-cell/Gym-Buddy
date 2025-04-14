@@ -11,6 +11,8 @@ func (app *application) routes() http.Handler {
 
 		mux.HandleFunc("GET /workout",app.catchAllClientRequestHandler)
 		mux.HandleFunc("GET /meal",app.catchAllClientRequestHandler)
+		mux.HandleFunc("GET /account/",app.catchAllClientRequestHandler)
+
 
 
 	
@@ -24,6 +26,11 @@ func (app *application) routes() http.Handler {
 	mux.Handle("POST /v1/meals", app.recoverPanic(app.withSentry(http.HandlerFunc(app.getMealByWorkoutHandler))))
 
 	mux.Handle("POST /v1/account/register", app.recoverPanic(app.withSentry(http.HandlerFunc(app.registerUserHandler))))
+
+	mux.Handle("POST /v1/account/login", app.recoverPanic(app.withSentry(http.HandlerFunc(app.loginUserHandler))))
+
+	 mux.Handle("GET /v1/account/activate", app.recoverPanic(app.withSentry(http.HandlerFunc(app.activateUserHandler))))
+
 
 	return mux
 }

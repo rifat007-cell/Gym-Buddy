@@ -8,6 +8,13 @@ export const API = {
     return API.fetchData("/meals", data);
   },
 
+  register: (data) => {
+    return API.fetchData("/account/register", data);
+  },
+  login: (data) => {
+    return API.fetchData("/account/login", data);
+  },
+
   fetchData: async (url, data = {}) => {
     try {
       const response = await fetch(API.baseURL + url, {
@@ -19,6 +26,7 @@ export const API = {
       });
 
       if (!response.ok) {
+        console.log(response);
         throw new Error("Network response was not ok");
       }
       const res = await response.json();

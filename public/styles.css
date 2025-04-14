@@ -301,7 +301,9 @@ body > header {
     color: var(--text-contrast);
   }
 
-  .workout {
+  .workout,
+  .meal,
+  .user {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -335,7 +337,8 @@ body > header {
     flex-direction: column;
   }
 
-  select {
+  select,
+  input {
     padding: 0.75rem;
     border: none;
     border-radius: 0.75rem;
@@ -347,7 +350,8 @@ body > header {
     transition: background 0.3s ease;
   }
 
-  select:hover {
+  select:hover,
+  input:hover {
     background: rgba(255, 255, 255, 0.3);
   }
 
