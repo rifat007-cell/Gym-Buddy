@@ -204,9 +204,18 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 
     
 
-		// Send a success message to the client.
-		// Simple HTML response.
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `<h1>Your account has been successfully activated!</h1><p>You can now log in.</p>`)
+	// 	// Send a success message to the client.
+	// 	// Simple HTML response.
+	// w.Header().Set("Content-Type", "text/html")
+	// w.WriteHeader(http.StatusOK)
+	// fmt.Fprintf(w, `<h1>Your account has been successfully activated!</h1><p>You can now log in.</p>`)
+
+
+	// then send a jwt token to the client with activated status
+
+	user.JWT = token.CreateJWT(*user, app.logger)
+	// Redirect user to frontend with JWT in query string
+redirectURL := fmt.Sprintf("http://localhost:4000/activated?token=%s", user.JWT)
+http.Redirect(w, r, redirectURL, http.StatusSeeOther)
+
 }

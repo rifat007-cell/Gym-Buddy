@@ -12,6 +12,8 @@ func (app *application) routes() http.Handler {
 		mux.HandleFunc("GET /workout",app.catchAllClientRequestHandler)
 		mux.HandleFunc("GET /meal",app.catchAllClientRequestHandler)
 		mux.HandleFunc("GET /account/",app.catchAllClientRequestHandler)
+				mux.HandleFunc("GET /activated",app.catchAllClientRequestHandler)
+
 
 
 

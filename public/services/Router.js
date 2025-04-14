@@ -55,7 +55,7 @@ export const Router = {
 
     if (pageElement) {
       // A page was found, we checked if we have access to it.
-      if (needsLogin && app.store.loggedIn == false) {
+      if (needsLogin && app.store.loggedIn == false && !app.store.activated) {
         app.router.go("/account/login");
         return;
       }

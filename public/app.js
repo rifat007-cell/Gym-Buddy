@@ -143,6 +143,7 @@ globalThis.app = {
       const response = await API.register(data);
       if (response.user) {
         app.store.jwt = response.user.jwt;
+        app.store.activated = response.user.activated;
 
         app.router.go("/account/");
       } else {
@@ -173,6 +174,7 @@ globalThis.app = {
       const response = await API.login(data);
       if (response.user) {
         app.store.jwt = response.user.jwt;
+        app.store.activated = response.user.activated;
 
         app.router.go("/account/");
       } else {

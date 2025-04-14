@@ -17,6 +17,7 @@ func CreateJWT(user data.User, logger *slog.Logger) string {
 		"email": user.Email,
 		"name":  user.Name,
 		"exp":   time.Now().Add(time.Hour * 72).Unix(), // Token expires in 72 hours
+		"activated": user.Activated,
 	})
 
 	// Sign the token with the secret

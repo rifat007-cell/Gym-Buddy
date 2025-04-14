@@ -2,10 +2,21 @@ export const API = {
   baseURL: "http://localhost:4000/v1",
 
   getWorkouts: (data) => {
-    return API.fetchData("/workouts", data);
+    if (app.store.activated) {
+      return API.fetchData("/workouts", data);
+    }
+    return {
+      workouts: null,
+    };
   },
   getMeals: (data) => {
-    return API.fetchData("/meals", data);
+    if (app.store.activated) {
+      return API.fetchData("/meals", data);
+    }
+
+    return {
+      meals: null,
+    };
   },
 
   register: (data) => {
