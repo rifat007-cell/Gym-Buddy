@@ -19,6 +19,45 @@ export const API = {
     };
   },
 
+  getDashboardData: () => {
+    if (app.store.activated) {
+      return API.fetchVolume("/workout_log_volume");
+    }
+    return {
+      volume: null,
+    };
+  },
+
+  fetchVolume: async (url) => {
+    try {
+      const response = await fetch(API.baseURL + url, {
+        headers: {
+          Authorization: app.store.jwt ? `Bearer ${app.store.jwt}` : "",
+        },
+      });
+
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Network response was not ok");
+      }
+      const res = await response.json();
+
+      return res;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
+
+  postWorkoutLog: (data) => {
+    if (app.store.activated) {
+      return API.fetchData("/workout_log", data);
+    }
+    return {
+      workoutlog: null,
+    };
+  },
+
   register: (data) => {
     return API.fetchData("/account/register", data);
   },
@@ -32,6 +71,7 @@ export const API = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: app.store.jwt ? `Bearer ${app.store.jwt}` : "",
         },
         body: JSON.stringify(data),
       });

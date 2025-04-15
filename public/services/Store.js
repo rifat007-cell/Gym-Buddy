@@ -1,11 +1,17 @@
 const jwtFromStorage = localStorage.getItem("jwt");
 
-const email = jwtFromStorage ? jwtDecode(jwtFromStorage)?.email : null;
+let decoded = null;
+try {
+  decoded = jwtFromStorage ? jwtDecode(jwtFromStorage) : null;
+} catch (e) {
+  // invalid token in storage
+  localStorage.removeItem("jwt");
+}
 
 const Store = {
   jwt: jwtFromStorage,
-  email: email,
-  activated: false,
+  email: decoded?.email || null,
+  activated: decoded?.activated || false,
   get loggedIn() {
     return this.jwt !== null;
   },

@@ -17,6 +17,7 @@ type Models struct{
 	Meals     MealsModel
 	Users     UserModel
 	Tokens    TokenModel
+	WorkoutLogs WorkoutLogModel
 	
 }
 
@@ -27,5 +28,6 @@ func NewModels(db *sql.DB) Models {
 		Meals:     MealsModel{DB: db},
 		Users:     UserModel{DB: db},
 		Tokens: 	TokenModel{DB: db},
+		WorkoutLogs: WorkoutLogModel{DB: db},
 	}
 }

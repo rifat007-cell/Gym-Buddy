@@ -66,21 +66,21 @@ func (h *application) AuthMiddleware(next http.Handler) http.Handler {
 			},
 		)
 		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			h.writeJSON(w, http.StatusUnauthorized, envelope{"error": "Invalid token"}, nil)
 			return
 		}
 
 		// Extract claims from the token
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+			h.writeJSON(w, http.StatusUnauthorized, envelope{"error": "Invalid token claims"}, nil)
 			return
 		}
 
 		// Get the email from claims
 		email, ok := claims["email"].(string)
 		if !ok {
-			http.Error(w, "Email not found in token", http.StatusUnauthorized)
+			h.writeJSON(w, http.StatusUnauthorized, envelope{"error": "Email not found in token"}, nil)
 			return
 		}
 

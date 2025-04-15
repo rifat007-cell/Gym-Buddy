@@ -11,6 +11,8 @@ https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/cjs/index.min.js
 "
       defer
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
     <script src="/app.js" type="module" defer></script>
     <base href="/" />
   </head>
@@ -52,7 +54,7 @@ https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/cjs/index.min.js
             <li><a href="/">Home</a></li>
             <li><a href="/workout">Workout</a></li>
             <li><a href="/meal">Meal</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/workoutlog">Log</a></li>
           </ul>
         </nav>
       </div>
@@ -234,6 +236,41 @@ https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/cjs/index.min.js
 
     <template id="activated-page-template">
       <h2>You are now activated</h2>
+    </template>
+
+    <template id="workoutlog-page-template">
+      <section class="">
+        <form class="form" onsubmit="app.workoutLog(event)">
+          <label for="log-workoutname">Workout</label>
+          <input
+            type="text"
+            id="log-workoutname"
+            placeholder="Workout"
+            required
+            autocomplete="email"
+          />
+          <label for="log-workoutsets">Sets</label>
+          <input type="number" id="log-workoutsets" placeholder="Sets" />
+
+          <label for="log-workoutreps">Reps</label>
+          <input type="number" id="log-workoutreps" placeholder="Reps" />
+
+          <label for="log-workoutreps">Duration</label>
+          <input
+            type="number"
+            id="log-workoutduration"
+            placeholder="Duration"
+          />
+
+          <label for="log-workoutweight">Weight</label>
+          <input type="number" id="log-workoutweight" placeholder="Weight" />
+          <button class="button">Submit</button>
+        </form>
+      </section>
+    </template>
+
+    <template id="dashboard-page-template">
+      <canvas id="dashboard" width="800" height="400"></canvas>
     </template>
   </body>
 </html>

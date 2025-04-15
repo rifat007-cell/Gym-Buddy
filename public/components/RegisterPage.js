@@ -14,6 +14,11 @@ export class RegisterPage extends HTMLElement {
     console.log(registerPageTemplate);
     const templateContent = registerPageTemplate.content.cloneNode(true);
     this.appendChild(templateContent);
+
+    this.querySelector("a").addEventListener("click", (event) => {
+      event.preventDefault();
+      app.router.go("/account/login");
+    });
   }
 }
 

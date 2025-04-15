@@ -190,6 +190,26 @@ globalThis.app = {
     app.router.go("/");
   },
 
+  workoutLog: async (event) => {
+    event.preventDefault();
+    const data = {
+      exercise: document.querySelector("#log-workoutname").value,
+      sets: document.querySelector("#log-workoutsets").value,
+      reps: document.querySelector("#log-workoutreps").value,
+      duration: document.querySelector("#log-workoutduration").value,
+      weight: document.querySelector("#log-workoutweight").value,
+    };
+
+    try {
+      const res = await API.postWorkoutLog(data);
+      console.log(res);
+      app.router.go("/dashboard");
+    } catch (error) {
+      console.error("Error posting workout log:", error);
+      app.showError("Error posting workout log", false);
+    }
+  },
+
   store: Store,
   router: Router,
   api: API,
