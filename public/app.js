@@ -1,4 +1,5 @@
 import { API } from "./services/API.js";
+import { Passkeys } from "./services/Passkeys.js";
 import Router from "./services/Router.js";
 import Store from "./services/Store.js";
 
@@ -8,16 +9,19 @@ globalThis.addEventListener("DOMContentLoaded", () => {
 
 globalThis.app = {
   showError: (message = "There was an error.", goToHome = false) => {
-    document.getElementById("alert-modal").showModal();
+    const modal = document.getElementById("alert-modal");
+
+    modal.innerHTML = "";
+
+    modal.showModal();
+
     const p = document.createElement("p");
-    console.log(message);
     p.innerText = message;
-    p.style.color = "hsl(20, 95%, 23%)";
     p.style.fontSize = "1.5rem";
-    document
-      .getElementById("alert-modal")
-      .appendChild(p)
-      .classList.add("error-message");
+    p.classList.add("error-message");
+
+    modal.appendChild(p);
+
     if (goToHome) {
       setTimeout(() => {
         app.router.go("/");
@@ -207,6 +211,20 @@ globalThis.app = {
     } catch (error) {
       console.error("Error posting workout log:", error);
       app.showError("Error posting workout log", false);
+    }
+  },
+
+  addPasskey: async () => {
+    const username = "testuser";
+    await Passkeys.register(username);
+  },
+
+  loginWithPasskey: async () => {
+    const username = document.getElementById("login-email").value;
+    if (username.length < 4) {
+      app.showError("To use a passkey, enter your email address first");
+    } else {
+      await Passkeys.authenticate(username);
     }
   },
 

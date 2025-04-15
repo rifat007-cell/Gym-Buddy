@@ -97,7 +97,7 @@ if err!=nil{
 
 
 	
-	err = app.sendEmail(emails, "user activation",activationData)
+	err = app.sendEmail(emails, "user activation", "./internal/mailer/templates/user_welcome.tmpl.html",activationData)
 
 	if err!=nil{
 		app.serverErrorResponse(w,r,err)

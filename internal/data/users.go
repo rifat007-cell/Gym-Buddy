@@ -220,6 +220,59 @@ func (m UserModel) GetUserFromToken(tokenScope, tokenPlaintext string) (*User, e
 }
 
 
+func (m *UserModel) LogReminderSent(userID int) error {
+    stmt := `INSERT INTO reminder_logs (user_id) VALUES ($1) ON CONFLICT DO NOTHING`
+
+    ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+    defer cancel()
+
+    _, err := m.DB.ExecContext(ctx, stmt, userID)
+    return err
+}
+
+
+func (m *UserModel) GetUsersMissingWorkoutLogs() ([]User, error) {
+    query := `
+        SELECT u.id, u.email
+        FROM users u
+        LEFT JOIN (
+            SELECT user_id, MAX(log_date) AS last_log_date
+            FROM user_workout_logs
+            GROUP BY user_id
+        ) l ON u.id = l.user_id
+        WHERE
+            (l.last_log_date IS NULL OR l.last_log_date < CURRENT_DATE - INTERVAL '1 day')
+            AND u.activated = true
+            AND NOT EXISTS (
+                SELECT 1 FROM reminder_logs r
+                WHERE r.user_id = u.id AND r.reminder_date = CURRENT_DATE
+            );
+    `
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+    rows, err := m.DB.QueryContext(ctx, query)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var users []User
+    for rows.Next() {
+        var u User
+        if err := rows.Scan(&u.ID, &u.Email); err != nil {
+            return nil, err
+        }
+        users = append(users, u)
+    }
+
+    return users, rows.Err()
+}
+
+
+
+
 func ValidateEmail(v *validator.Validator, email string) {
     v.Check(email != "", "email", "must be provided")
     v.Check(validator.Matches(email, validator.EmailRX), "email", "must be a valid email address")

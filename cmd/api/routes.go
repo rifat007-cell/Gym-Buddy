@@ -39,6 +39,21 @@ func (app *application) routes() http.Handler {
 
 	mux.Handle("POST /v1/workout_log", app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.workoutLogHandler)))))
 
+
+	// for registering passskey we need check the user middleware.
+	mux.Handle("POST /api/passkey/registration-begin",
+		app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.WebAuthnRegistrationBeginHandler)))))
+
+	mux.Handle("POST /api/passkey/registration-end",
+		app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.WebAuthnRegistrationEndHandler)))))
+
+		// this is for login using passkey.
+	mux.Handle("POST /api/passkey/authentication-begin",app.recoverPanic(app.withSentry(http.HandlerFunc(app.WebAuthnAuthenticationBeginHandler))))
+	
+	mux.Handle("POST /api/passkey/authentication-end", app.recoverPanic(app.withSentry(http.HandlerFunc(app.WebAuthnAuthenticationEndHandler))))
+
+
+
 	 mux.Handle("GET /v1/account/activate", app.recoverPanic(app.withSentry(http.HandlerFunc(app.activateUserHandler))))
 
 

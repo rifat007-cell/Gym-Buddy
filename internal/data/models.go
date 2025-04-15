@@ -3,6 +3,8 @@ package data
 import (
 	"database/sql"
 	"errors"
+	"log/slog"
+	"os"
 )
 var (
     ErrRecordNotFound = errors.New("record not found")
@@ -18,6 +20,7 @@ type Models struct{
 	Users     UserModel
 	Tokens    TokenModel
 	WorkoutLogs WorkoutLogModel
+	Passkey     PasskeyModel
 	
 }
 
@@ -29,5 +32,6 @@ func NewModels(db *sql.DB) Models {
 		Users:     UserModel{DB: db},
 		Tokens: 	TokenModel{DB: db},
 		WorkoutLogs: WorkoutLogModel{DB: db},
+		Passkey:     *NewPasskeyModel(db,slog.New(slog.NewTextHandler(os.Stdout, nil))),
 	}
 }

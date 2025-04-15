@@ -11,6 +11,8 @@ import (
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/tanvir-rifat007/gymBuddy/internal/data"
 )
 
 
@@ -110,29 +112,68 @@ return nil
 
 // i am using the built in go smtp package to send emails
 
-func (app *application) sendEmail(to []string, subject string, data any) error {
+// func (app *application) sendEmail(to []string, subject string, data any) error {
+// 	auth := smtp.PlainAuth("", os.Getenv("FROM_EMAIL"), os.Getenv("FROM_EMAIL_PASSWORD"), os.Getenv("FROM_EMAIL_SMTP"))
+
+// 	// 1. Parse the template
+// 	tmpl, err := template.ParseFiles("./internal/mailer/templates/user_welcome.tmpl.html")
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 2. Render the template to a buffer
+// 	buf:= new(bytes.Buffer)
+// 	err = tmpl.Execute(buf, data)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 3. Construct email headers
+// 	headers := make(map[string]string)
+// 	headers["From"] = os.Getenv("FROM_EMAIL")
+// 	headers["To"] = strings.Join(to, ",")
+// 	headers["Subject"] = subject
+// 	headers["MIME-Version"] = "1.0"
+// 	headers["Content-Type"] = "text/html; charset=\"UTF-8\""
+
+// 	var message strings.Builder
+// 	for k, v := range headers {
+// 		message.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
+// 	}
+// 	message.WriteString("\r\n" + buf.String())
+
+// 	// 4. Send the email
+// 	return smtp.SendMail(
+// 		os.Getenv("SMTP_ADDR"), // e.g., "sandbox.smtp.mailtrap.io:587"
+// 		auth,
+// 		os.Getenv("FROM_EMAIL"),
+// 		to,
+// 		[]byte(message.String()),
+// 	)
+// }
+
+
+func (app *application) sendEmail(to []string, subject string, templateFile string, data any) error {
 	auth := smtp.PlainAuth("", os.Getenv("FROM_EMAIL"), os.Getenv("FROM_EMAIL_PASSWORD"), os.Getenv("FROM_EMAIL_SMTP"))
 
-	// 1. Parse the template
-	tmpl, err := template.ParseFiles("./internal/mailer/templates/user_welcome.tmpl.html")
+	tmpl, err := template.ParseFiles(templateFile)
 	if err != nil {
 		return err
 	}
 
-	// 2. Render the template to a buffer
-	buf:= new(bytes.Buffer)
+	buf := new(bytes.Buffer)
 	err = tmpl.Execute(buf, data)
 	if err != nil {
 		return err
 	}
 
-	// 3. Construct email headers
-	headers := make(map[string]string)
-	headers["From"] = os.Getenv("FROM_EMAIL")
-	headers["To"] = strings.Join(to, ",")
-	headers["Subject"] = subject
-	headers["MIME-Version"] = "1.0"
-	headers["Content-Type"] = "text/html; charset=\"UTF-8\""
+	headers := map[string]string{
+		"From":         os.Getenv("FROM_EMAIL"),
+		"To":           strings.Join(to, ","),
+		"Subject":      subject,
+		"MIME-Version": "1.0",
+		"Content-Type": "text/html; charset=\"UTF-8\"",
+	}
 
 	var message strings.Builder
 	for k, v := range headers {
@@ -140,12 +181,48 @@ func (app *application) sendEmail(to []string, subject string, data any) error {
 	}
 	message.WriteString("\r\n" + buf.String())
 
-	// 4. Send the email
 	return smtp.SendMail(
-		os.Getenv("SMTP_ADDR"), // e.g., "sandbox.smtp.mailtrap.io:587"
+		os.Getenv("SMTP_ADDR"),
 		auth,
 		os.Getenv("FROM_EMAIL"),
 		to,
 		[]byte(message.String()),
 	)
+}
+
+
+
+
+func (app *application )SendWorkoutReminderEmails(users data.UserModel) {
+	userList, err := users.GetUsersMissingWorkoutLogs()
+	if err != nil {
+		app.logger.Error("Failed to fetch users for reminder", "error", err)
+		return
+	}
+
+	for _, u := range userList {
+		subject := "💪 Time to log your workout!"
+		// body := "Hey! It looks like you missed logging your workout yesterday. Keep the streak going — log it now."
+
+		var data struct{
+			Name string
+		}
+
+		data.Name = u.Name
+
+
+
+		err := app.sendEmail([]string{u.Email}, subject, "./internal/mailer/templates/workout_reminder.tmpl.html", data)
+		if err != nil {
+			app.logger.Error("Failed to send reminder", "user", u.ID, "error", err)
+			continue
+		}
+
+		err = users.LogReminderSent(u.ID)
+		if err != nil {
+			app.logger.Error("Failed to log reminder sent", "user", u.ID, "error", err)
+		} else {
+			app.logger.Info("Reminder sent", "user", u.ID)
+		}
+	}
 }
