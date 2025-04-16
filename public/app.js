@@ -36,7 +36,9 @@ globalThis.app = {
   showError: (message = "There was an error.", goToHome = false) => {
     const modal = document.getElementById("alert-modal");
 
-    modal.innerHTML = "";
+    Array.from(modal.querySelectorAll(".error-message")).forEach((el) =>
+      el.remove()
+    );
 
     modal.showModal();
 
@@ -201,13 +203,14 @@ globalThis.app = {
         password: password,
       };
       const response = await API.login(data);
+      console.log("inside app", response);
       if (response.user) {
         app.store.jwt = response.user.jwt;
         app.store.activated = response.user.activated;
 
         app.router.go("/account/");
       } else {
-        app.showError(response.message, false);
+        app.showError(response.error, false);
       }
     } else {
       app.showError(errors.join(". "), false);

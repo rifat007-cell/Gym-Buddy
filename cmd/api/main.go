@@ -4,9 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"flag"
-	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 	"time"
 
@@ -113,16 +111,9 @@ if err != nil {
 	c.Start()
 	logger.Info("Cron job started (every minute)")
 
-	// Start HTTP server
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		Handler:      app.routes(),
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
-	}
 
-	err = srv.ListenAndServe()
+
+	err = app.serve()
 	if err != nil {
 		logger.Error("Error starting server", "error", err)
 		os.Exit(1)
