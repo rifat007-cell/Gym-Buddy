@@ -112,6 +112,7 @@ if err != nil {
 	logger.Info("Cron job started (every minute)")
 
 
+	// server
 
 	err = app.serve()
 	if err != nil {
