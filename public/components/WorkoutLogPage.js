@@ -14,6 +14,8 @@ export class WorkoutLogPage extends HTMLElement {
     console.log(homePageTemplate);
     const templateContent = homePageTemplate.content.cloneNode(true);
     this.appendChild(templateContent);
+
+    this.style.zIndex = "-1000";
   }
 }
 

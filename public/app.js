@@ -5,6 +5,31 @@ import Store from "./services/Store.js";
 
 globalThis.addEventListener("DOMContentLoaded", () => {
   app.router.init();
+
+  const toggleNav = document.querySelector(
+    '[aria-controls="primary-navigation"]'
+  );
+
+  toggleNav.addEventListener("click", () => {
+    const isExpanded = toggleNav.getAttribute("aria-expanded");
+
+    if (isExpanded === "false") {
+      toggleNav.setAttribute("aria-expanded", "true");
+    } else {
+      toggleNav.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    document.body.classList.add("resize-animation-stopper");
+
+    // cleanup after animation
+    requestAnimationFrame(() => {
+      document.body.classList.remove("resize-animation-stopper");
+    });
+  });
+
+  resizeObserver.observe(document.body);
 });
 
 globalThis.app = {
@@ -110,7 +135,7 @@ globalThis.app = {
       mealElements.classList.add("meal-modal");
       mealElements.innerHTML = `
     
-        <p>Name : ${meal.name} <span style="color:hsl(20, 95%, 23%)">(${meal.calories}cal)</span></p>
+        <p>Name : ${meal.name} <span style="color:hsl(20, 90%, 60%)">(${meal.calories}cal)</span></p>
         <p>Description: ${meal.description}</p>
         <br/>
       `;
