@@ -4,7 +4,15 @@ export class LoginPage extends HTMLElement {
   }
 
   connectedCallback() {
+    this.renderLoading();
+
     this.render();
+  }
+
+  renderLoading() {
+    this.innerHTML = `
+      <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
+    `;
   }
 
   render() {
@@ -17,6 +25,12 @@ export class LoginPage extends HTMLElement {
       event.preventDefault();
       app.router.go("/account/register");
     });
+
+    // remove loading animation
+    const loadingAnimation = this.querySelector("animated-loading");
+    if (loadingAnimation) {
+      loadingAnimation.remove();
+    }
   }
 }
 

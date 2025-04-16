@@ -1,3 +1,4 @@
+import { AnimatedLoading } from "./components/AnimatedLoading.js";
 import { API } from "./services/API.js";
 import { Passkeys } from "./services/Passkeys.js";
 import Router from "./services/Router.js";
@@ -171,7 +172,22 @@ globalThis.app = {
         email: email,
         password: password,
       };
+
+      document.querySelector(".button").innerHTML = `
+        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
+
+      `;
+
+      console.log(document.querySelector(".button"));
+
       const response = await API.register(data);
+
+      //remove registering...
+      const loadingAnimation = document.querySelector("animated-loading");
+      if (loadingAnimation) {
+        loadingAnimation.remove();
+      }
+
       if (response.user) {
         app.store.jwt = response.user.jwt;
         app.store.activated = response.user.activated;
@@ -202,7 +218,15 @@ globalThis.app = {
         email: email,
         password: password,
       };
+      document.querySelector(".button").innerHTML = `
+        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
+      `;
       const response = await API.login(data);
+      //remove registering...
+      const loadingAnimation = document.querySelector("animated-loading");
+      if (loadingAnimation) {
+        loadingAnimation.remove();
+      }
       console.log("inside app", response);
       if (response.user) {
         app.store.jwt = response.user.jwt;
@@ -252,7 +276,20 @@ globalThis.app = {
     if (username.length < 4) {
       app.showError("To use a passkey, enter your email address first");
     } else {
+      // loading
+      document.querySelector(".passkey").innerHTML = `
+        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
+      `;
+
       await Passkeys.authenticate(username);
+
+      // remove loading
+      const loadingAnimation = document.querySelector("animated-loading");
+      if (loadingAnimation) {
+        loadingAnimation.remove();
+      }
+
+      document.querySelector(".passkey").textContent = `Log In With Passkey`;
     }
   },
 
