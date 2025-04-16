@@ -16,7 +16,7 @@ import (
 )
 
 type config struct {
-	Port int
+	Port string
 	Env  string
 	db   struct {
 		dsn string
@@ -51,7 +51,12 @@ func main() {
 	defer sentry.Flush(2 * time.Second)
 
 	var cfg config
-	flag.IntVar(&cfg.Port, "port", 4000, "API server port")
+	port := os.Getenv("PORT")
+if port == "" {
+	port = "4000" // fallback for local dev
+}
+
+	flag.StringVar(&cfg.Port, "port", port, "API server port")
 	flag.StringVar(&cfg.Env, "env", "development", "Environment (development|staging|production)")
 	flag.StringVar(&cfg.db.dsn, "dsn", os.Getenv("DB_URL"), "Database connection string")
 	flag.Parse()
@@ -113,7 +118,8 @@ if err != nil {
 
 	// server
 
-	err = app.serve()
+	err = app.serve(":" + port)
+
 	if err != nil {
 		logger.Error("Error starting server", "error", err)
 		os.Exit(1)
