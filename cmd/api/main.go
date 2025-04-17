@@ -72,7 +72,7 @@ if port == "" {
 
 
 	wconfig := &webauthn.Config{
-	RPDisplayName: "ReelingIt",
+	RPDisplayName: "GymBuddy",
 	RPID:          "gym-buddy-production-14b1.up.railway.app",
 	RPOrigins:     []string{"https://gym-buddy-production-14b1.up.railway.app"},
 }
