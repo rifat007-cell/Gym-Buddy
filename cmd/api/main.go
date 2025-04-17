@@ -72,10 +72,10 @@ if port == "" {
 
 
 	wconfig := &webauthn.Config{
-		RPDisplayName: "ReelingIt",
-		RPID:          "localhost",
-		RPOrigins:     []string{"http://localhost:4000"},
-	}
+	RPDisplayName: "ReelingIt",
+	RPID:          "gym-buddy-production-14b1.up.railway.app",
+	RPOrigins:     []string{"https://gym-buddy-production-14b1.up.railway.app"},
+}
 
 webAuthn, err := webauthn.New(wconfig)
 if err != nil {
