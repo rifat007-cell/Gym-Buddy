@@ -5,10 +5,11 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
-	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func (app *application) serve(addr string) error {
@@ -21,29 +22,38 @@ func (app *application) serve(addr string) error {
 		ErrorLog:     slog.NewLogLogger(app.logger.Handler(), slog.LevelError),
 	}
 
-	shutdownError := make(chan error)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-	go func() {
-		quit := make(chan os.Signal, 1)
-		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-		s := <-quit
-		app.logger.Info("shutting down server", "signal", s.String())
+	// for multiple goroutines
+	eg, ctx := errgroup.WithContext(ctx)
 
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
+	// Start the server
+	eg.Go(func() error {
+		app.logger.Info("starting server", "addr", addr)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+		return nil
+	})
 
-		shutdownError <- srv.Shutdown(ctx)
-	}()
+	// Wait for termination signal
+	<-ctx.Done()
+	app.logger.Info("shutting down server", "signal", ctx.Err().Error())
 
-	app.logger.Info("starting server", "addr", addr, "env", app.config.Env)
+	// Context for graceful shutdown
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-	err := srv.ListenAndServe()
-	if !errors.Is(err, http.ErrServerClosed) {
-		return err
-	}
+	eg.Go(func() error {
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			return err
+		}
+		return nil
+	})
 
-	err = <-shutdownError
-	if err != nil {
+	if err := eg.Wait(); err != nil {
+		app.logger.Error("server shutdown error", "error", err)
 		return err
 	}
 
