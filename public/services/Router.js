@@ -7,6 +7,9 @@ export const Router = {
         event.preventDefault();
 
         const href = a.getAttribute("href");
+        if (href === "#") {
+          return;
+        }
         Router.go(href);
       });
     });

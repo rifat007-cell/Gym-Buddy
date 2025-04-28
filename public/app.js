@@ -31,6 +31,12 @@ globalThis.addEventListener("DOMContentLoaded", () => {
   });
 
   resizeObserver.observe(document.body);
+
+  // service worker
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js");
+  }
 });
 
 globalThis.app = {
@@ -297,3 +303,40 @@ globalThis.app = {
   router: Router,
   api: API,
 };
+
+let deferredPrompt;
+
+globalThis.addEventListener("beforeinstallprompt", (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  // Update UI to show the download button
+  const downloadButton = document.getElementById("downloadButton");
+  if (downloadButton) {
+    downloadButton.style.display = "block";
+  }
+});
+
+document.getElementById("downloadButton").addEventListener("click", (e) => {
+  // Hide the download button
+  e.preventDefault();
+  const downloadButton = document.getElementById("downloadButton");
+  if (downloadButton) {
+    downloadButton.style.display = "none";
+  }
+
+  // Show the install prompt
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the install prompt");
+      } else {
+        console.log("User dismissed the install prompt");
+      }
+      deferredPrompt = null;
+    });
+  }
+});
