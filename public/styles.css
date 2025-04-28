@@ -315,6 +315,10 @@ body > header {
       display: flex;
       gap: 0.5rem 1rem;
       flex-wrap: wrap;
+
+      & li:not(:last-child) {
+        align-self: center;
+      }
     }
 
     a {
@@ -401,6 +405,16 @@ body > header {
     background-color: var(--button-primary-bg);
     color: var(--text-contrast);
   }
+
+  /* #downloadButton {
+    background-color: var(--button-primary-bg);
+    color: var(--text-contrast);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  } */
 
   .workout,
   .meal,
