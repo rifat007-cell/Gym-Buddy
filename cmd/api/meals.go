@@ -1,6 +1,11 @@
 package main
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+
+	"github.com/tanvir-rifat007/gymBuddy/internal/data"
+)
 
 
 func (app *application) getMealByWorkoutHandler(w http.ResponseWriter, r *http.Request){
@@ -17,6 +22,35 @@ func (app *application) getMealByWorkoutHandler(w http.ResponseWriter, r *http.R
 	}
 
 	meals,err:=app.models.Meals.GetAllMealByWorkoutName(input.Goal,input.DietaryPreference)
+
+	if err!=nil{
+		app.serverErrorResponse(w,r,err)
+		return
+	}
+
+	// get the user email from context
+	email,ok := r.Context().Value("email").(string)
+	if !ok {
+		app.serverErrorResponse(w, r, errors.New("missing email in context"))
+		return
+	}
+
+	// get the user from db:
+	user,err:= app.models.Users.GetUserByEmail(email)
+	if err!=nil{
+		if errors.Is(err, data.ErrRecordNotFound) {
+			app.notFoundResponse(w, r)
+		} else {
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	// get the user id from the user
+	userId:= user.ID
+
+	// save the user daily plain
+	_,err = app.models.UserDailyPlan.UpdateDailyPlan(meals[0].ID,userId)
 
 	if err!=nil{
 		app.serverErrorResponse(w,r,err)

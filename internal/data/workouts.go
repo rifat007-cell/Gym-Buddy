@@ -70,3 +70,37 @@ func (m WorkoutModel) GetAllExerciseBasedWorkoutName(goal,level string)([]Workou
 
 	
 }
+
+
+
+
+func (m WorkoutModel) GetWorkoutById(id int)([]Exercise,error){
+	
+	stmt:= `SELECT id,name,sets,reps
+	FROM workout_exercises
+	WHERE template_id=$1`
+
+	ctx,cancel:= context.WithTimeout(context.Background(),3*time.Second)
+
+	defer cancel()
+
+	rows,err:= m.DB.QueryContext(ctx,stmt,id)
+	if err!=nil{
+		return nil,err
+	}
+	defer rows.Close()
+	var exercises []Exercise
+	for rows.Next(){
+		var e Exercise
+		err= rows.Scan(&e.ID,&e.Name,&e.Sets,&e.Reps)
+		if err!=nil{
+			return nil,err
+		}
+		exercises= append(exercises,e)
+	}
+	if err= rows.Err(); err!=nil{
+		return nil,err
+	}
+	return exercises,nil
+
+}

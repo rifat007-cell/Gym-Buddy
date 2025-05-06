@@ -1,4 +1,5 @@
 import { AnimatedLoading } from "./components/AnimatedLoading.js";
+import { ChatWidget } from "./components/ChatPage.js";
 import { API } from "./services/API.js";
 import { Passkeys } from "./services/Passkeys.js";
 import Router from "./services/Router.js";
@@ -40,7 +41,7 @@ globalThis.addEventListener("DOMContentLoaded", () => {
 });
 
 globalThis.app = {
-  showError: (message = "There was an error.", goToHome = false) => {
+  showError: (response = "There was an error", goToHome = false) => {
     const modal = document.getElementById("alert-modal");
 
     Array.from(modal.querySelectorAll(".error-message")).forEach((el) =>
@@ -49,6 +50,7 @@ globalThis.app = {
 
     modal.showModal();
 
+    const message = response?.error?.email || response?.error || response;
     const p = document.createElement("p");
     p.innerText = message;
     p.style.fontSize = "1.5rem";
@@ -179,11 +181,6 @@ globalThis.app = {
         password: password,
       };
 
-      document.querySelector(".button").innerHTML = `
-        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
-
-      `;
-
       console.log(document.querySelector(".button"));
 
       const response = await API.register(data);
@@ -200,7 +197,7 @@ globalThis.app = {
 
         app.router.go("/account/");
       } else {
-        app.showError(response.message, false);
+        app.showError(response, false);
       }
     } else {
       app.showError(errors.join(". "), false);
@@ -224,23 +221,23 @@ globalThis.app = {
         email: email,
         password: password,
       };
-      document.querySelector(".button").innerHTML = `
-        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
-      `;
+
       const response = await API.login(data);
+
+      console.log("response login", response);
+
       //remove registering...
       const loadingAnimation = document.querySelector("animated-loading");
       if (loadingAnimation) {
         loadingAnimation.remove();
       }
-      console.log("inside app", response);
       if (response.user) {
         app.store.jwt = response.user.jwt;
         app.store.activated = response.user.activated;
 
         app.router.go("/account/");
       } else {
-        app.showError(response.error, false);
+        app.showError(response, false);
       }
     } else {
       app.showError(errors.join(". "), false);
@@ -282,11 +279,6 @@ globalThis.app = {
     if (username.length < 4) {
       app.showError("To use a passkey, enter your email address first");
     } else {
-      // loading
-      document.querySelector(".passkey").innerHTML = `
-        <animated-loading data-elements="5" data-width="20px" data-height="20px"></animated-loading>
-      `;
-
       await Passkeys.authenticate(username);
 
       // remove loading

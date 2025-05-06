@@ -114,6 +114,8 @@ https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/cjs/index.min.js
 
     <main></main>
 
+    <chat-widget></chat-widget>
+
     <dialog id="alert-modal">
       <button onclick="app.closeModal()">X</button>
     </dialog>
@@ -329,6 +331,26 @@ https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/build/cjs/index.min.js
 
     <template id="dashboard-page-template">
       <canvas id="dashboard" width="800" height="400"></canvas>
+    </template>
+
+    <template id="chat-page-template">
+      <div id="chat-widget">
+        <div id="chat-header">💪 AI Coach</div>
+        <div id="chat-body">
+          <div class="message bot">
+            Hey! I'm your fitness coach. Ask me anything!
+          </div>
+        </div>
+        <form id="chat-form">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message..."
+            autocomplete="off"
+          />
+          <button type="submit">➤</button>
+        </form>
+      </div>
     </template>
 
     <footer class="footer">

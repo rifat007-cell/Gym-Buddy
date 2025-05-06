@@ -29,15 +29,19 @@ func (app *application) routes() http.Handler {
 	mux.Handle("GET /v1/workout_log_volume", app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.getWorkoutVolumeHandler)))))
 
 	
-	mux.Handle("POST /v1/workouts", app.recoverPanic(app.withSentry(http.HandlerFunc(app.getExercisesByWorkoutHandler))))
+	mux.Handle("POST /v1/workouts", app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.getExercisesByWorkoutHandler)))))
 
-	mux.Handle("POST /v1/meals", app.recoverPanic(app.withSentry(http.HandlerFunc(app.getMealByWorkoutHandler))))
+	mux.Handle("POST /v1/meals", app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.getMealByWorkoutHandler)))))
 
 	mux.Handle("POST /v1/account/register", app.recoverPanic(app.withSentry(http.HandlerFunc(app.registerUserHandler))))
 
 	mux.Handle("POST /v1/account/login", app.recoverPanic(app.withSentry(http.HandlerFunc(app.loginUserHandler))))
 
 	mux.Handle("POST /v1/workout_log", app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.workoutLogHandler)))))
+
+	mux.Handle("POST /v1/chat",app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.chat)))))
+
+		mux.Handle("GET /v1/chat/history",app.recoverPanic(app.withSentry(app.AuthMiddleware(http.HandlerFunc(app.chatHistory)))))
 
 
 	// for registering passskey we need check the user middleware.

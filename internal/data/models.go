@@ -21,6 +21,8 @@ type Models struct{
 	Tokens    TokenModel
 	WorkoutLogs WorkoutLogModel
 	Passkey     PasskeyModel
+	UserDailyPlan UserDailyPlanModel
+	ChatMessages ChatMessageModel
 	
 }
 
@@ -33,5 +35,7 @@ func NewModels(db *sql.DB) Models {
 		Tokens: 	TokenModel{DB: db},
 		WorkoutLogs: WorkoutLogModel{DB: db},
 		Passkey:     *NewPasskeyModel(db,slog.New(slog.NewTextHandler(os.Stdout, nil))),
+		UserDailyPlan: UserDailyPlanModel{DB: db},
+		ChatMessages: ChatMessageModel{DB: db},
 	}
 }

@@ -19,6 +19,19 @@ export const API = {
     };
   },
 
+  async getChatHistory() {
+    const res = await fetch("/v1/chat/history", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: app.store.jwt ? `Bearer ${app.store.jwt}` : "",
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch history");
+    return res.json();
+  },
+
   getDashboardData: () => {
     if (app.store.activated) {
       return API.fetchVolume("/workout_log_volume");
@@ -58,6 +71,15 @@ export const API = {
     };
   },
 
+  chatWithAI: (data) => {
+    if (app.store.activated) {
+      return API.fetchData("/chat", data);
+    }
+    return {
+      response: null,
+    };
+  },
+
   register: (data) => {
     return API.fetchData("/account/register", data);
   },
@@ -76,12 +98,6 @@ export const API = {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        console.log(response);
-        return {
-          error: "Network response was not ok",
-        };
-      }
       const res = await response.json();
 
       return res;

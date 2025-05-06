@@ -12,6 +12,7 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/tanvir-rifat007/gymBuddy/internal/agents"
 	"github.com/tanvir-rifat007/gymBuddy/internal/data"
 )
 
@@ -29,6 +30,7 @@ type application struct {
 	config config
 	models data.Models
 	webauthn *webauthn.WebAuthn
+	ai       *agents.OpenAPI
 
 }
 
@@ -89,6 +91,7 @@ if err != nil {
 		sentry: sentry.CurrentHub(),
 		models: data.NewModels(db),
 		webauthn: webAuthn,
+		ai : agents.NewOpenAI(context.Background(), os.Getenv("OPENAI_API_KEY"), "gpt-4o-mini",nil),
 	}
 
 	// // Setup cron

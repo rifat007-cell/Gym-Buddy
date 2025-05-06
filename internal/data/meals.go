@@ -51,3 +51,26 @@ func (m *MealsModel) GetAllMealByWorkoutName(goal, dietaryPreference string) ([]
 
 	return meals, nil
 }
+
+func (m *MealsModel) GetMealById(id int) (Meal, error) {
+	query := `
+		SELECT id, goal, dietary_preference, name, description, calories
+		FROM meal_templates
+		WHERE id = $1
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	row := m.DB.QueryRowContext(ctx, query, id)
+
+	var meal Meal
+	if err := row.Scan(&meal.ID, &meal.Goal, &meal.DietaryPreference, &meal.Name, &meal.Description, &meal.Calories); err != nil {
+		if err == sql.ErrNoRows {
+			return meal, nil
+		}
+		return meal, err
+	}
+
+	return meal, nil
+}
